@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 // Import user and wallet models
 const User = require("./userModel");
 const Wallet = require("./walletModel");
+const Transaction = require("./transactionModel");
 
 // Initialize Express app
 const app = express();
@@ -105,4 +106,48 @@ app.post("/login", async (req, res) => {
     wallet: walletData,
     refreshToken,
   });
+});
+
+// Route to transfer money
+app.post("/transfer", async (req, res) => {
+  try {
+    const { senderWalletId, receiverWalletId, amount } = req.body;
+
+    if (!senderWalletId || !receiverWalletId || amount <= 0) {
+      return res.status(400).json({ message: "Invalid transaction details" });
+    }
+
+    // Fetch sender and receiver wallets
+    const senderWallet = await Wallet.findById(senderWalletId);
+    const receiverWallet = await Wallet.findById(receiverWalletId);
+
+    if (!senderWallet || !receiverWallet) {
+      return res.status(404).json({ message: "Wallet not found" });
+    }
+
+    // Check sender balance
+    if (senderWallet.balance < amount) {
+      return res.status(400).json({ message: "Insufficient balance" });
+    }
+
+    // Deduct from sender and credit receiver
+    senderWallet.balance -= amount;
+    receiverWallet.balance += amount;
+
+    await senderWallet.save();
+    await receiverWallet.save();
+
+    // Log the transaction
+    const transaction = new Transaction({
+      senderWalletId,
+      receiverWalletId,
+      amount,
+    });
+    await transaction.save();
+
+    res.status(200).json({ message: "Transaction successful", transaction });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 });
