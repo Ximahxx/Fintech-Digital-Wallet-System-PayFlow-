@@ -121,14 +121,12 @@ app.post("/login", async (req, res) => {
     // Remove password hash before returning user details
     const { passwordHash, ...userData } = user.toObject();
 
-    res
-      .status(200)
-      .json({
-        message: "Login successful",
-        accessToken,
-        user: userData,
-        refreshToken,
-      });
+    res.status(200).json({
+      message: "Login successful",
+      accessToken,
+      user: userData,
+      refreshToken,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -208,15 +206,32 @@ app.get("/transactions", verifyToken, async (req, res) => {
     }).sort({ timestamp: -1 });
 
     // Format transactions dynamically
-    const formattedTransactions = transactions.map((transaction) => ({
-      _id: transaction._id,
-      amount: transaction.amount,
-      type:
-        transaction.senderWalletId.toString() === req.user.walletId.toString()
-          ? "debit"
-          : "credit",
-      timestamp: transaction.timestamp,
-    }));
+    const formattedTransactions = await Promise.all(
+      transactions.map(async (transaction) => {
+        const sender = await User.findOne({
+          walletId: transaction.senderWalletId,
+        });
+        const receiver = await User.findOne({
+          walletId: transaction.receiverWalletId,
+        });
+
+        return {
+          _id: transaction._id,
+          amount: transaction.amount,
+          type:
+            transaction.senderWalletId.toString() ===
+            req.user.walletId.toString()
+              ? "debit"
+              : "credit",
+          otherParty:
+            transaction.senderWalletId.toString() ===
+            req.user.walletId.toString()
+              ? receiver?.username || "Unknown Recipient"
+              : sender?.username || "Unknown Sender",
+          timestamp: transaction.timestamp,
+        };
+      })
+    );
 
     res.status(200).json(formattedTransactions);
   } catch (error) {
