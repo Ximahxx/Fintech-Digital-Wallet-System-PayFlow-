@@ -203,7 +203,7 @@ app.get("/transactions", verifyToken, async (req, res) => {
         { senderWalletId: req.user.walletId },
         { receiverWalletId: req.user.walletId },
       ],
-    }).sort({ timestamp: -1 });
+    }).sort({ timestamp: -1 }); // Sorting transactions from newest to oldest
 
     // Format transactions dynamically
     const formattedTransactions = await Promise.all(
