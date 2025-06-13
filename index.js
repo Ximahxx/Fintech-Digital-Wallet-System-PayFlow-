@@ -16,8 +16,8 @@ connectDB();
 app.use("/api/users", userRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use("/", (req, res) => {
-  res.status(201).send("Fintech-Digital-Wallet-System-PayFlow-").json({ message: "Fintech-Digital-Wallet-System-PayFlow-" });
+app.get("/", (req, res) => {
+  res.status(200).send("Fintech-Digital-Wallet-System-PayFlow-").json({ message: "Fintech-Digital-Wallet-System-PayFlow-" });
 });
 
 const PORT = process.env.PORT || 1000;
