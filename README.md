@@ -29,7 +29,7 @@ A secure and scalable digital wallet backend built with Node.js, Express, and Mo
 
 ## 🗂️ Folder Structure
 
-/fintech-wallet-api │ ├── /config # Database connection & app config ├── /controllers # Business logic for users, wallets, payments ├── /middleware # Authentication middleware ├── /models # Mongoose schemas for User, Wallet, Transaction, etc. ├── /routes # Express route definitions ├── /utils # Helper functions (email, currency conversion, cron jobs) ├── .env # Environment variables ├── server.js # Application entry point └── package.json # App metadata and dependencies
+/fintech-wallet-api │ ├── /config # Database connection & app config ├── /controllers # Business logic for users, wallets, payments ├── /middleware # Authentication middleware ├── /models # Mongoose schemas for User, Wallet, Transaction, etc. ├── /routes # Express route definitions ├── /utils # Helper functions (email, currency conversion, cron jobs) ├── .env # Environment variables ├── index.js # Application entry point └── package.json # App metadata and dependencies
 
 > This modular architecture makes the app easy to scale, test, and maintain.
 
