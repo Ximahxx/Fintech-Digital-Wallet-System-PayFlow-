@@ -44,14 +44,16 @@ A secure and scalable digital wallet backend built with Node.js, Express, and Mo
 ### Installation
 
 
-1. **Clone the repo** ```bash
+1. **Clone the repo**
+```bash
 git clone https://github.com/yourusername/fincore-wallet-api.git
 cd fincore-wallet-api
 
 2. **Install dependencies**
 npm install
 
-3. **Configure your environment** ```Create a .env file in the root directory and add:
+3. **Configure your environment**
+```Create a .env file in the root directory and add:
 PORT=1000
 MONGO_URI=your_mongodb_uri
 ACCESS_TOKEN_SECRET=your_access_token_secret
