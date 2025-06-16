@@ -107,6 +107,7 @@ Content-Type: application/json
   "email": "salma@example.com",
   "password": "securePass123"
 }
+```
 ✅ Response:
 ```json
 {
@@ -114,6 +115,7 @@ Content-Type: application/json
   "token": "eyJhbGciOiJIUzI1NiIs..."
 }
 ```
+
 2. **Login**
 ```http
 POST /api/users/login
@@ -123,6 +125,7 @@ Content-Type: application/json
   "email": "salma@example.com",
   "password": "securePass123"
 }
+```
 ✅ Response:
 ```json
 {
@@ -135,11 +138,13 @@ Content-Type: application/json
     "email": "salma@example.com"
   }
 }
+```
 
 3 **📜 Transaction History**
 ```http
 GET /api/transactions
 Authorization: Bearer <accessToken>
+```
 ✅ Response:
 ```json
 [
@@ -156,6 +161,7 @@ Authorization: Bearer <accessToken>
     "timestamp": "2025-06-10T14:20:00Z"
   }
 ]
+```
 
 ### 👛 Wallet Routes
 
@@ -168,12 +174,14 @@ Content-Type: application/json
 {
   "amount": 1000
 }
+```
 ✅ Response:
 ```json
 {
   "message": "Deposit successful",
   "balance": 2000
 }
+```
 
 2. **Withdraw Funds**
 ```http
@@ -184,12 +192,14 @@ Content-Type: application/json
 {
   "amount": 500
 }
+```
 ✅ Response:
 ```json
 {
   "message": "Withdrawal successful",
   "balance": 1500
 }
+```
 
 3. **Transfer Funds**
 ```http
@@ -201,6 +211,7 @@ Content-Type: application/json
   "receiverWalletId": "643a0c1fbcf34e29bd9e57c0",
   "amount": 200
 }
+```
 ✅ Response:
 ```json
 {
@@ -212,17 +223,20 @@ Content-Type: application/json
     "timestamp": "2025-06-13T09:32:00Z"
   }
 }
+```
 
 4. **View Balance**
 ```http
 GET /api/wallet/balance
 Authorization: Bearer <accessToken>
 Content-Type: application/json
+```
 ✅ Response:
 ```json
 {
   "balance": 1300
 }
+```
 
 ### 🔁 Scheduled Payment Routes
 
@@ -238,6 +252,7 @@ Content-Type: application/json
   "frequency": "weekly",
   "startDate": "2025-06-14"
 }
+```
 ✅ Response:
 ```json
 {
@@ -251,11 +266,13 @@ Content-Type: application/json
     "nextPaymentDate": "2025-06-14T00:00:00.000Z"
   }
 }
+```
 
 2. **View All Scheduled Payments**
 ```http
 GET /api/payments/schedule
 Authorization: Bearer <accessToken>
+```
 ✅ Response:
 ```json
 {
@@ -270,16 +287,19 @@ Authorization: Bearer <accessToken>
     }
   ]
 }
+```
 
 3. **Cancel a Scheduled Payment**
 ```http
 DELETE /api/payments/schedule/6641d02ec497f4726bd4fe55
 Authorization: Bearer <accessToken>
+```
 ✅ Response:
 ```json
 {
   "message": "Scheduled payment canceled"
 }
+```
 
 ## 📖 API Documentation
 
