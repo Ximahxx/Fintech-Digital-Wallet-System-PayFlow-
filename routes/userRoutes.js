@@ -1,14 +1,28 @@
-// Import required modules
+// ================================================
+// 👤 User Routes - Registration, Login & History
+// ================================================
+
 const express = require("express");
-const userController = require("../controllers/userController");
-const verifyToken = require("../middleware/authMiddleware");
 const router = express.Router();
 
-// 📌 Route: User Registration (Creates a user & wallet)
+// ✅ Import Controller & Middleware
+const userController = require("../controllers/userController");
+const verifyToken = require("../middleware/authMiddleware");
+
+// ---------------------------------------------
+// 📝 Register a New User (Also creates wallet)
+// ---------------------------------------------
 router.post("/register", userController.registerUser);
-// 📌 Route: User Login (Verifies credentials & issues JWT)
+
+// ---------------------------------------------
+// 🔐 Log In Existing User (JWT Auth)
+// ---------------------------------------------
 router.post("/login", userController.loginUser);
-// 📌 Route: Get Transaction History (Requires authentication)
+
+// ---------------------------------------------
+// 📜 Get Transaction History (Protected Route)
+// ---------------------------------------------
 router.get("/transactions", verifyToken, userController.transactions);
 
+// ✅ Export the Router
 module.exports = router;

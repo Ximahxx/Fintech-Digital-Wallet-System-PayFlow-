@@ -1,18 +1,35 @@
+// ================================================
+// 🚀 Wallet Routes - FinCore Wallet API
+// ================================================
+
 const express = require("express");
 const router = express.Router();
+
+// ✅ Controller that handles wallet operations
 const walletController = require("../controllers/walletController");
+
+// ✅ Middleware that verifies JWT tokens (protects routes)
 const verifyToken = require("../middleware/authMiddleware");
 
-// 📌 Route: Make Deposit (Requires authentication)
+// ---------------------------------------------
+// 💰 Deposit Funds into a User's Wallet
+// ---------------------------------------------
 router.post("/deposit", verifyToken, walletController.depositFunds);
 
-// 📌 Route: Withdraw Money (Requires authentication)
+// ---------------------------------------------
+// 💸 Withdraw Funds from a User's Wallet
+// ---------------------------------------------
 router.post("/withdraw", verifyToken, walletController.withdrawFunds);
 
-// 📌 Route: Get Wallet Balance (Requires authentication)
+// ---------------------------------------------
+// 📊 Get Current Wallet Balance
+// ---------------------------------------------
 router.get("/balance", verifyToken, walletController.balance);
 
-// 📌 Route: Transfer Money Between Wallets
+// ---------------------------------------------
+// 🔄 Transfer Funds to Another User's Wallet
+// ---------------------------------------------
 router.post("/transfer", verifyToken, walletController.transfer);
 
+// ✅ Export the router to be used in server.js
 module.exports = router;

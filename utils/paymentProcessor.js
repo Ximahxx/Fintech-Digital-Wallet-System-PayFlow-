@@ -1,3 +1,7 @@
+// ===========================================================
+// ⏱️ Scheduled Payment Processor - Automates Recurring Payments
+// ===========================================================
+
 const cron = require("node-cron");
 const ScheduledPayment = require("../models/ScheduledPayment");
 const Wallet = require("../models/walletModel");
@@ -6,6 +10,7 @@ const Transaction = require("../models/transactionModel");
 const { convertCurrency } = require("./currencyConverter");
 const { sendEmail } = require("./emailService");
 
+// 🔄 Cron Job: Runs every minute to check for due payments
 cron.schedule("*/1 * * * *", async () => {
   try {
     const now = new Date();
@@ -14,23 +19,28 @@ cron.schedule("*/1 * * * *", async () => {
     });
 
     for (const schedule of duePayments) {
+      // ✅ Fetch sender and receiver wallet/user details
       const senderWallet = await Wallet.findOne({ userId: schedule.userId });
       const receiverWallet = await Wallet.findById(schedule.receiverWalletId);
       const sender = await User.findById(schedule.userId);
       const receiver = await User.findById(receiverWallet.userId);
+
+      if (
+        !senderWallet ||
+        !receiverWallet ||
+        senderWallet.balance < schedule.amount
+      ) {
+        continue; // Skip processing if funds are insufficient
+      }
+
+      // ✅ Convert amount based on currency exchange rates
       const convertedAmount = convertCurrency(
         schedule.amount,
         senderWallet.currency,
         receiverWallet.currency
       );
 
-      if (
-        !senderWallet ||
-        !receiverWallet ||
-        senderWallet.balance < schedule.amount
-      )
-        continue;
-
+      // ✅ Process transaction
       senderWallet.balance -= schedule.amount;
       receiverWallet.balance += convertedAmount;
 
@@ -47,7 +57,7 @@ cron.schedule("*/1 * * * *", async () => {
       await senderWallet.save();
       await receiverWallet.save();
 
-      // Update nextPaymentDate based on frequency
+      // ✅ Update next payment date based on frequency
       const next = new Date(schedule.nextPaymentDate);
       if (schedule.frequency === "daily") next.setDate(next.getDate() + 1);
       if (schedule.frequency === "weekly") next.setDate(next.getDate() + 7);
@@ -56,25 +66,20 @@ cron.schedule("*/1 * * * *", async () => {
 
       await schedule.save();
       console.log(
-        `💸 Payment of ${schedule.amount} processed for user ${schedule.userId}`
+        `💸 Payment of ₦${schedule.amount} processed for user ${schedule.userId}`
       );
 
+      // ✅ Send Email Notifications
       await sendEmail(
         sender.email,
         "Debit Alert",
-        `
-      <h3>You've sent ₦${schedule.amount}</h3>
-      <p>To: ${receiver.username}</p>
-      `
+        `<h3>You've sent ₦${schedule.amount}</h3><p>To: ${receiver.username}</p>`
       );
 
       await sendEmail(
         receiver.email,
         "Credit Alert",
-        `
-      <h3>You received ₦${schedule.amount}</h3>
-      <p>From: ${sender.username}</p>
-      `
+        `<h3>You received ₦${schedule.amount}</h3><p>From: ${sender.username}</p>`
       );
     }
   } catch (error) {

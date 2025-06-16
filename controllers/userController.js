@@ -1,72 +1,83 @@
-// Import required modules
+// ===============================================
+// 👤 User Controller - Registration, Login & Transactions
+// ===============================================
+
+// ✅ Required Modules
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// Import user and wallet models
+// ✅ Load Models
 const User = require("../models/userModel");
 const Wallet = require("../models/walletModel");
 const Transaction = require("../models/transactionModel");
 
-// Load environment variables from .env file
+// ✅ Load Environment Variables
 dotenv.config();
-
-// Define constants for JWT secrets
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
-// 📌 Route: User Registration (Creates a user & wallet)
+// -----------------------------------------------
+// 📝 Register User - Creates a User & Wallet
+// -----------------------------------------------
 exports.registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Check if user exists
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: "User exists" });
 
-    // Hash password
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user and save to database
-    const newUser = new User({ username, email, passwordHash: hashedPassword });
+    // Create new user
+    const newUser = new User({
+      username,
+      email,
+      passwordHash: hashedPassword,
+    });
     await newUser.save();
 
-    // Auto-create wallet for the new user
+    // Create wallet and link to user
     const newWallet = new Wallet({ userId: newUser._id, balance: 0 });
     await newWallet.save();
-
-    // Link wallet ID to the user
     newUser.walletId = newWallet._id;
     await newUser.save();
 
-    // Generate JWT token for authentication
+    // Generate access token
     const token = jwt.sign({ id: newUser._id }, ACCESS_TOKEN_SECRET, {
       expiresIn: "1h",
     });
 
-    res.status(201).json({ message: "User registered successfully", token });
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Register Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// 📌 Route: User Login (Verifies credentials & issues JWT)
+// -----------------------------------------------
+// 🔐 Login User - Authenticates & Issues Tokens
+// -----------------------------------------------
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user in the database
+    // Check if user exists
     const user = await User.findOne({ email });
     if (!user)
       return res.status(404).json({ message: "User account does not exist." });
 
-    // Compare provided password with stored hashed password
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    // Generate authentication tokens
+    // Generate JWT tokens
     const accessToken = jwt.sign({ id: user._id }, ACCESS_TOKEN_SECRET, {
       expiresIn: "5m",
     });
@@ -74,7 +85,7 @@ exports.loginUser = async (req, res) => {
       expiresIn: "30d",
     });
 
-    // Remove password hash before returning user details
+    // Exclude password hash from response
     const { passwordHash, ...userData } = user.toObject();
 
     res.status(200).json({
@@ -84,12 +95,14 @@ exports.loginUser = async (req, res) => {
       refreshToken,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// 📌 Route: Get Transaction History (Requires authentication)
+// -----------------------------------------------
+// 📜 Get Transaction History - Authenticated Route
+// -----------------------------------------------
 exports.transactions = async (req, res) => {
   try {
     const transactions = await Transaction.find({
@@ -97,9 +110,9 @@ exports.transactions = async (req, res) => {
         { senderWalletId: req.user.walletId },
         { receiverWalletId: req.user.walletId },
       ],
-    }).sort({ timestamp: -1 }); // Sorting transactions from newest to oldest
+    }).sort({ timestamp: -1 });
 
-    // Format transactions dynamically
+    // Format transactions with readable info
     const formattedTransactions = await Promise.all(
       transactions.map(async (transaction) => {
         const sender = await User.findOne({
@@ -129,7 +142,7 @@ exports.transactions = async (req, res) => {
 
     res.status(200).json(formattedTransactions);
   } catch (error) {
-    console.error(error);
+    console.error("Transaction Fetch Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
