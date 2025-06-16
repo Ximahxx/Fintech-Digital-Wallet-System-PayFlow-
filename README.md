@@ -99,21 +99,23 @@ npm run dev
 ### 👤 Auth Routes
 
 1. **Register a User**
+```http
 POST /api/users/register
 Content-Type: application/json
-
 {
   "username": "salma",
   "email": "salma@example.com",
   "password": "securePass123"
 }
 ✅ Response:
+```json
 {
   "message": "User registered successfully",
   "token": "eyJhbGciOiJIUzI1NiIs..."
 }
-
+```
 2. **Login**
+```http
 POST /api/users/login
 Content-Type: application/json
 
@@ -122,6 +124,7 @@ Content-Type: application/json
   "password": "securePass123"
 }
 ✅ Response:
+```json
 {
   "message": "Login successful",
   "accessToken": "eyJhbGciOiJIUzI1NiIs...",
@@ -134,9 +137,11 @@ Content-Type: application/json
 }
 
 3 **📜 Transaction History**
+```http
 GET /api/transactions
 Authorization: Bearer <accessToken>
 ✅ Response:
+```json
 [
   {
     "amount": 200,
@@ -155,6 +160,7 @@ Authorization: Bearer <accessToken>
 ### 👛 Wallet Routes
 
 1. **Deposit Funds**
+```http
 POST /api/wallet/deposit
 Authorization: Bearer <accessToken>
 Content-Type: application/json
@@ -163,12 +169,14 @@ Content-Type: application/json
   "amount": 1000
 }
 ✅ Response:
+```json
 {
   "message": "Deposit successful",
   "balance": 2000
 }
 
 2. **Withdraw Funds**
+```http
 POST /api/wallet/withdraw
 Authorization: Bearer <accessToken>
 Content-Type: application/json
@@ -177,12 +185,14 @@ Content-Type: application/json
   "amount": 500
 }
 ✅ Response:
+```json
 {
   "message": "Withdrawal successful",
   "balance": 1500
 }
 
 3. **Transfer Funds**
+```http
 POST /api/wallet/transfer
 Authorization: Bearer <accessToken>
 Content-Type: application/json
@@ -192,6 +202,7 @@ Content-Type: application/json
   "amount": 200
 }
 ✅ Response:
+```json
 {
   "message": "Transaction successful",
   "transaction": {
@@ -202,11 +213,13 @@ Content-Type: application/json
   }
 }
 
-. **View Balance**
+4. **View Balance**
+```http
 GET /api/wallet/balance
 Authorization: Bearer <accessToken>
 Content-Type: application/json
 ✅ Response:
+```json
 {
   "balance": 1300
 }
@@ -214,6 +227,7 @@ Content-Type: application/json
 ### 🔁 Scheduled Payment Routes
 
 1. **Create a Scheduled Payment**
+```http
 POST /api/payments/schedule
 Authorization: Bearer <accessToken>
 Content-Type: application/json
@@ -225,6 +239,7 @@ Content-Type: application/json
   "startDate": "2025-06-14"
 }
 ✅ Response:
+```json
 {
   "message": "Scheduled payment created",
   "scheduled": {
@@ -238,9 +253,11 @@ Content-Type: application/json
 }
 
 2. **View All Scheduled Payments**
+```http
 GET /api/payments/schedule
 Authorization: Bearer <accessToken>
 ✅ Response:
+```json
 {
   "count": 2,
   "schedules": [
@@ -255,9 +272,11 @@ Authorization: Bearer <accessToken>
 }
 
 3. **Cancel a Scheduled Payment**
+```http
 DELETE /api/payments/schedule/6641d02ec497f4726bd4fe55
 Authorization: Bearer <accessToken>
 ✅ Response:
+```json
 {
   "message": "Scheduled payment canceled"
 }
