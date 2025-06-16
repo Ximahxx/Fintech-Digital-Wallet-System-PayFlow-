@@ -63,6 +63,12 @@ EMAIL_PASS=your_email_password
 4. **Start the app**
 npm run dev
 
+## 📖 API Documentation
+
+For detailed API endpoints and test requests, visit the Postman collection:
+
+🔗 **Postman Documentation:** [Your API Collection Link]([https://your-postman-link-here](https://documenter.getpostman.com/view/44539199/2sB2x6msZS))
+
 ## 📬 API Endpoints
 
 > All protected routes require a Bearer token in the Authorization header.
