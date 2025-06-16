@@ -63,7 +63,7 @@ REFRESH_TOKEN_SECRET=your_refresh_token_secret
 EMAIL_USER=your_email@example.com
 EMAIL_PASS=your_email_password
 ```
-5. **Start the app**
+4. **Start the app**
 ```
 npm run dev
 ```
