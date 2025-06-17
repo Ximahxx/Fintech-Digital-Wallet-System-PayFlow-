@@ -305,7 +305,7 @@ Authorization: Bearer <accessToken>
 
 For detailed API endpoints and test requests, visit the Postman collection:
 
-🔗 **Postman Documentation:** [https://your-postman-link-here](https://documenter.getpostman.com/view/44539199/2sB2x6msZS)[Your API Collection Link]()
+🔗 **Postman Documentation:** [https://documenter.getpostman.com/view/44539199/2sB2x6msZS]
 
 ## 🙌 Acknowledgments
 
